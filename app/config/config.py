@@ -1,10 +1,4 @@
-from asyncio.log import logger
-#from dotenv import load_dotenv
-from pathlib import Path
 import os
-
-basedir = os.path.abspath(Path(__file__).parents[2])
-#load_dotenv(os.path.join(basedir, '.env'))
 
 class Config(object):
     TESTING = False
@@ -20,15 +14,15 @@ class DevelopmentConfig(Config):
     DEBUG = True
     FLASK_ENV = 'development'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URI')
-        
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{os.environ.get('USER_DB')}:{os.environ.get('PASS_DB')}@{os.environ.get('URL_DB')}/{os.environ.get('NAME_DB')}"
+
 class ProductionConfig(Config):
     FLASK_ENV = 'production'
     DEBUG = False
     TESTING = False
     SQLALCHEMY_RECORD_QUERIES = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('PROD_DATABASE_URI')
-    
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{os.environ.get('USER_DB')}:{os.environ.get('PASS_DB')}@{os.environ.get('URL_DB')}/{os.environ.get('NAME_DB')}"
+
     @classmethod
     def init_app(cls, app):
         Config.init_app(app)
@@ -39,4 +33,4 @@ def factory(app):
         'production': ProductionConfig
     }
     
-    return configuration[app];
+    return configuration[app]

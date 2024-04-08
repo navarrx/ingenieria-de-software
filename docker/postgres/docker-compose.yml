@@ -1,12 +1,12 @@
 version: '3.3'
 services:
-  app-mercadito:
-    image: app-mercadito:v1.0.1
-    networks:
-      - postgresql
-    ports:
-      - '8080:8080'
-    environment:
+  # app-mercadito:
+  #   image: app-mercadito:v1.0.1
+  #   networks:
+  #     - postgresql
+  #   ports:
+  #     - '8080:8080'
+  #   environment:
       
   postgresql:
     #container_name: postgresql-servidor
@@ -15,7 +15,7 @@ services:
     networks:
       - postgresql
     ports:
-      - '3307:3306'
+      - '5433:5432'
     environment:
       - POSTGRES_PASSWORD=${PASSWORD}
       - POSTGRES_DB=${BASE_DE_DATOS}
