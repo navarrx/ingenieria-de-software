@@ -6,6 +6,9 @@ class ProductService:
 
     def find_by_id(self, product_id):
         return self.__repo.find_by_id(product_id)
+    
+    def find_by_name(self, name):
+        return self.__repo.find_by_name(name)
 
     def find_by_brand(self, brand):
         return self.__repo.find_by_brand(brand)

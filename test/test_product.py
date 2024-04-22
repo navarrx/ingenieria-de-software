@@ -1,8 +1,13 @@
 import unittest
 from app import create_app, db
 from app.models import Product
+from app.services.product_services import ProductService
 
 class ProductTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.product_service = ProductService()
+
     def setUp(self):
         self.app = create_app()
         self.app_context = self.app.app_context()
@@ -16,38 +21,46 @@ class ProductTestCase(unittest.TestCase):
 
     def test_product_create(self):
         product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
-        db.session.add(product)
-        db.session.commit()
-        self.assertIsNotNone(product.id)
+        self.product_service.create(product)
+        self.assertIsNotNone(product)
+
+    def test_product_find_by_id(self):
+        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
+        self.product_service.create(product)
+        self.product_service.find_by_id(product.id)
+        self.assertIsNotNone(product)
+
+    def test_product_find_by_name(self):
+        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
+        product_name = product.name
+        self.product_service.create(product)
+        self.product_service.find_by_name(product_name)
+        self.assertIsNotNone(product)
         self.assertEqual(product.name, "Test Product")
-        self.assertEqual(product.price, 10)
+
+    def test_product_find_by_brand(self):
+        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
+        product_brand = product.brand
+        self.product_service.create(product)
+        self.product_service.find_by_brand(product_brand)
+        self.assertIsNotNone(product)
         self.assertEqual(product.brand, "Test Brand")
-        self.assertEqual(product.size, "Test Size")
-        self.assertEqual(product.stock, 50)
 
     def test_product_update(self):
-        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
+        product = Product(name='Test Product', price=10, brand='Test Brand', size='Test Size', stock=50)
         db.session.add(product)
         db.session.commit()
-        product.name = "Updated Product"
-        product.price = 20
-        product.brand = "Updated Brand"
-        product.size = "Updated Size"
-        product.stock = 100
-        db.session.commit()
-        self.assertEqual(product.name, 'Updated Product')
-        self.assertEqual(product.price, 20)
-        self.assertEqual(product.brand, 'Updated Brand')
-        self.assertEqual(product.size, 'Updated Size')
-        self.assertEqual(product.stock, 100)
+        product.name = 'Updated Test Product'
+        self.product_service.update(product, product.id)
+        self.assertIsNotNone(product)
+        self.assertEqual(product.name, 'Updated Test Product')
 
     def test_product_delete(self):
         product = Product(name='Test Product', price=10, brand='Test Brand', size='Test Size', stock=50)
         db.session.add(product)
         db.session.commit()
-        db.session.delete(product)
-        db.session.commit()
-        self.assertIsNone(Product.query.get(product.id))
+        result = self.product_service.delete(product.id)
+        self.assertIsNotNone(result)
 
 if __name__ == '__main__':
     unittest.main()

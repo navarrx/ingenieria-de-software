@@ -3,3 +3,5 @@ Flask-Cors==4.0.0
 flask-marshmallow==0.15.0
 Flask-Migrate==4.0.4
 Flask-SQLAlchemy==3.0.5
+proofdock-chaos-middleware-flask==0.1.3
+proofdock-chaos-middleware-python==0.2.3

@@ -1,6 +1,5 @@
 from app import db
 from app.repositories.CRUD import Read, Update, Create, Delete
-from app.config.database import db
 
 # Base repository for all the other ones. Aplying DRY and IoC principle
 class BaseRepository(Read, Update, Create, Delete):
