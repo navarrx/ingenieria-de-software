@@ -1,0 +1,16 @@
+services:
+  ms1:
+    container_name: microservice1
+    image: micro1:v1.0.0
+    networks:
+      - mired
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ms1.rule=Host(`ms1.localhost`)"
+      - "traefik.http.routers.ms1.entrypoints=web"
+    ports:
+      - "5001:5000"
+    
+networks:
+  mired:
+    external: true
