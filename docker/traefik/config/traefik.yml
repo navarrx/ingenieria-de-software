@@ -30,3 +30,8 @@ entryPoints:
           scheme: https
   https:
     address: ":443"
+  postgresql:
+    address: ":5432"
+  redis:
+    address: ":6379"
+

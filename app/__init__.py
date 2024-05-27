@@ -20,7 +20,7 @@ def create_app():
     
     db.init_app(app)
     #Init app with cache
-    #Cache.init_app(app, config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 300, 'CACHE_REDIS_HOST:': 'localhost', 'CACHE_REDIS_PORT': '6379', 'CACHE_REDIS_DB': '0', 'CACHE_REDIS_PASSWORD': 'Tisiano23', 'CACHE_KEY_PREFIX': 'test_'})
+    Cache.init_app(app, config={'CACHE_TYPE': 'simple', 'CACHE_DEFAULT_TIMEOUT': 300, 'CACHE_REDIS_HOST:': 'localhost', 'CACHE_REDIS_PORT': '6379', 'CACHE_REDIS_DB': '0', 'CACHE_REDIS_PASSWORD': 'Tisiano23', 'CACHE_KEY_PREFIX': 'test_'})
 
 
     return app

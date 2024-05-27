@@ -1,16 +1,20 @@
 services:
   ms1:
-    container_name: microservice1
     image: micro1:v1.0.0
     networks:
       - mired
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.ms1.rule=Host(`ms1.localhost`)"
-      - "traefik.http.routers.ms1.entrypoints=web"
-    ports:
-      - "5001:5000"
-    
+      - "traefik.http.routers.ms1.rule=Host(`ms1.product.localhost`)"
+      - "traefik.http.routers.ms1.tls=true"
+      - "traefik.http.services.ms1.loadbalancer.server.port=5000"
+      - "traefik.docker.network=mired"
+      - "traefik.http.middlewares.ms1.circuitbreaker.expression=LatencyAtQuantileMS(50.0) > 100"
+      - "traefik.http.middlewares.ms1.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+      - "traefik.http.middlewares.ms1.circuitbreaker.expression=NetworkErrorRatio() > 0.5"
+   # ports:
+    #  - "5000:5000"
+
 networks:
   mired:
     external: true

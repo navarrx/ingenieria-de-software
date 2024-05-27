@@ -14,5 +14,5 @@ http:
 
 tls:
   certificates:
-    - certFile: "/etc/certs/product-cert.pem"
-      keyFile: "/etc/certs/product-key.pem"
+    - certFile: "/etc/certs/product.localhost.pem"
+      keyFile: "/etc/certs/product.localhost.pem"
