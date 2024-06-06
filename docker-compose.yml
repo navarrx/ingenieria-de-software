@@ -1,6 +1,12 @@
 services:
   ms1:
-    image: micro1:v1.0.0
+    image: micro1:v1.0.4
+    #AGREGAR TODAS LAS VARIABLES DE ENTORNO (DB)
+    environment:
+      - USER_DB=lord
+      - PASS_DB=Tisiano23
+      - URL_DB=postgresql
+      - NAME_DB=postgres
     networks:
       - mired
     labels:

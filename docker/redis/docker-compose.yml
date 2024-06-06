@@ -7,16 +7,14 @@ services:
       - ./data:/data
       - ./data/redis.conf:/data/redis.conf
     command: redis-server /data/redis.conf --loglevel notice --requirepass ${REDIS_PASSWORD}
-    # ports:
-    #   - "6379:6379"
     networks:
       - mired
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.redis.rule=Host(`redis.localhost.com`)"
-      - "traefik.http.routers.redis.entrypoints=redis"
-      - "traefik.http.routers.redis.service=redis"
-      - "traefik.http.services.redis.loadbalancer.server.port=6379"
+      - "traefik.tcp.routers.redis.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.redis.entrypoints=redis"
+      - "traefik.tcp.routers.redis.service=redis"
+      - "traefik.tcp.services.redis.loadbalancer.server.port=6379"
 
 networks:
   mired:

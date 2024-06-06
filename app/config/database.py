@@ -11,4 +11,4 @@ URL_DB=os.environ.get('URL_DB')
 NAME_DB=os.environ.get('NAME_DB')
 
 
-FULL_URL_DB = f'postgresql://{USER_DB}:{PASS_DB}@{URL_DB}:5433/{NAME_DB}'
+FULL_URL_DB = f'postgresql://{USER_DB}:{PASS_DB}@{URL_DB}:5432/{NAME_DB}'
