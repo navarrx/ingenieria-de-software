@@ -5,7 +5,7 @@ import time
 from dotenv import load_dotenv
 
 class TestRedis(unittest.TestCase):
-
+    #Hay que revisar que todo funcione correctamente, es un test piloto
     def setUp(self):
         load_dotenv()
         self.redis = redis.Redis(host='localhost', port=6379, db=0, password=os.getenv('PASSWORD'))
