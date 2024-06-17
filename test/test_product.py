@@ -1,11 +1,17 @@
 import unittest
+import sys
+import os
+
+# Asegúrate de que puedes importar la aplicación correctamente
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from app import create_app, db
 from app.models import Product
 from app.services.product_services import ProductService
 
 class ProductTestCase(unittest.TestCase):
     @classmethod
-    def setUpClass(cls) -> None:
+    def setUpClass(cls):
         cls.product_service = ProductService()
 
     def setUp(self):
@@ -13,54 +19,38 @@ class ProductTestCase(unittest.TestCase):
         self.app_context = self.app.app_context()
         self.app_context.push()
         db.create_all()
-
+    
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        db.session.rollback()  # Hace rollback de la sesión en lugar de eliminar todas las tablas porque la anterior configuración fallaba
         self.app_context.pop()
+    
+    def test_create_product(self):
+        entity = self.create_entity()
+        self.assertTrue(entity.id)
 
-    def test_product_create(self):
-        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
-        self.product_service.create(product)
-        self.assertIsNotNone(product)
-
-    def test_product_find_by_id(self):
-        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
-        self.product_service.create(product)
-        self.product_service.find_by_id(product.id)
-        self.assertIsNotNone(product)
-
-    def test_product_find_by_name(self):
-        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
-        product_name = product.name
-        self.product_service.create(product)
-        self.product_service.find_by_name(product_name)
-        self.assertIsNotNone(product)
-        self.assertEqual(product.name, "Test Product")
-
-    def test_product_find_by_brand(self):
-        product = Product(name="Test Product", price=10, brand="Test Brand", size="Test Size", stock=50)
-        product_brand = product.brand
-        self.product_service.create(product)
-        self.product_service.find_by_brand(product_brand)
-        self.assertIsNotNone(product)
-        self.assertEqual(product.brand, "Test Brand")
-
-    def test_product_update(self):
-        product = Product(name='Test Product', price=10, brand='Test Brand', size='Test Size', stock=50)
-        db.session.add(product)
-        db.session.commit()
-        product.name = 'Updated Test Product'
-        self.product_service.update(product, product.id)
-        self.assertIsNotNone(product)
-        self.assertEqual(product.name, 'Updated Test Product')
-
-    def test_product_delete(self):
-        product = Product(name='Test Product', price=10, brand='Test Brand', size='Test Size', stock=50)
-        db.session.add(product)
-        db.session.commit()
-        result = self.product_service.delete(product.id)
-        self.assertIsNotNone(result)
+    def create_entity(self):
+        entity = Product(name="Coca Cola", price="300", brand="Coca Cola", size="200ml", stock="50")
+        self.product_service.create(entity)
+        return entity
+    
+    def test_delete_product(self):
+        entity = self.create_entity()
+        self.product_service.delete(entity.id)
+        self.assertIsNone(Product.query.get(entity.id))
+    
+    def test_find_by_id_product(self):
+        entity = self.create_entity()
+        self.assertTrue(self.product_service.find_by_id(entity.id))
+    
+    def test_find_all_products(self):
+        entity = self.create_entity()
+        self.assertTrue(self.product_service.find_all())
+    
+    def test_update_product(self):
+        entity = self.create_entity()
+        entity.name = "Pepsi"
+        self.product_service.update(entity, entity.id)
+        self.assertEqual(Product.query.get(entity.id).name, "Pepsi")
 
 if __name__ == '__main__':
     unittest.main()

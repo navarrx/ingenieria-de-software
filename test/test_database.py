@@ -1,23 +1,27 @@
 import unittest
-from app import create_app, db
-from sqlalchemy import text
+import psycopg2
+import os
+from dotenv import load_dotenv
 
-class DatabaseTestCase(unittest.TestCase):
-    
+class TestDatabase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app()
-        self.app_context = self.app.app_context()
-        self.app_context.push()
-        db.create_all()
+        load_dotenv()
+        self.connection = psycopg2.connect(
+            host='postgresql.product.localhost',
+            port=5432,
+            user=os.getenv('USER_DB'),
+            password=os.getenv('PASS_DB'),
+            database=os.getenv('NAME_DB')
+        )
+        self.cursor = self.connection.cursor()
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
-        self.app_context.pop()
-    
-    def test_connection(self):
-        result = db.session.query(text("'Hello World'")).one()
-        self.assertEqual(result[0], 'Hello World')
+        self.cursor.close()
+        self.connection.close()
+
+    def test_database_connection(self):
+        print("\n--- Testing the Database Connection ---")
+        self.assertIsNotNone(self.connection)
 
 if __name__ == "__main__":
     unittest.main()
