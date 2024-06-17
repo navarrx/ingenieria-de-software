@@ -8,6 +8,7 @@ ENV PATH=$PATH:/home/flaskapp/.local/bin
 RUN useradd --create-home --home-dir /home/flaskapp lord
 
 WORKDIR /home/flaskapp
+RUN apt-get update && apt-get install -y iputils-ping wget
 
 USER lord
 RUN mkdir app
@@ -15,10 +16,12 @@ RUN mkdir app
 COPY ./app ./app
 COPY ./app.py .
 
+
 ADD requirements.txt ./requirements.txt
 
 RUN pip install --no-cache-dir --user -r requirements.txt
+RUN pip install gevent gunicorn==22.0.0
 
 EXPOSE 5000
 
-CMD ["python", "./app.py"]
+CMD ["gunicorn", "--workers", "1", "--log-level", "INFO", "--bind", "0.0.0.0:5000", "app:create_app()"]
