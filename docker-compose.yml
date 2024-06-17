@@ -1,14 +1,17 @@
 services:
   ms1:
-    image: micro1:v1.0.4
+    image: micro1:v1.0.6
     #AGREGAR TODAS LAS VARIABLES DE ENTORNO (DB)
     environment:
-      - USER_DB=lord
-      - PASS_DB=Tisiano23
-      - URL_DB=postgresql
-      - NAME_DB=postgres
+      - USER_DB=${USER_DB}
+      - PASS_DB=${PASS_DB}
+      - URL_DB=${URL_DB}
+      - NAME_DB=${NAME_DB}
     networks:
       - mired
+    #Con esto levantamos 3 contenedores del mismo microservicio a la vez
+    # deploy:
+    #   replicas: 3
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.ms1.rule=Host(`ms1.product.localhost`)"
@@ -18,8 +21,25 @@ services:
       - "traefik.http.middlewares.ms1.circuitbreaker.expression=LatencyAtQuantileMS(50.0) > 100"
       - "traefik.http.middlewares.ms1.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
       - "traefik.http.middlewares.ms1.circuitbreaker.expression=NetworkErrorRatio() > 0.5"
-   # ports:
-    #  - "5000:5000"
+  
+  msorder1:
+    image: msorder1:v1.0.0
+    environment:
+      - USER_DB=${USER_DB}
+      - PASS_DB=${PASS_DB}
+      - URL_DB=${URL_DB}
+      - NAME_DB=${NAME_DB}
+    networks:
+      - mired
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.msorder1.rule=Host(`msorder1.product.localhost`)"
+      - "traefik.http.routers.msorder1.tls=true"
+      - "traefik.http.services.msorder1.loadbalancer.server.port=5000"
+      - "traefik.docker.network=mired"
+      - "traefik.http.middlewares.msorder1.circuitbreaker.expression=LatencyAtQuantileMS(50.0) > 100"
+      - "traefik.http.middlewares.msorder1.circuitbreaker.expression=ResponseCodeRatio(500, 600, 0, 600) > 0.25"
+      - "traefik.http.middlewares.msorder1.circuitbreaker.expression=NetworkErrorRatio() > 0.5"
 
 networks:
   mired:

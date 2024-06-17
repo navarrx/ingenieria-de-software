@@ -18,7 +18,7 @@ def create_app():
 
     from app.resources import product
     app.register_blueprint(product, url_prefix='/api/v1/')
-    
+        
     db.init_app(app)
     migrate.init_app(app, db)
     #Init app with cache

@@ -2,15 +2,12 @@ from app.models.product import Product
 from marshmallow import Schema,validate, fields, Schema, post_load
 
 class ProductSchema(Schema):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    id = fields.Integer(attribute='id', data_key='id')
-    name = fields.String(attribute='name', data_key='name')
-    price = fields.String(attribute='price', data_key='price')
-    brand = fields.String(attribute='brand', data_key='brand')
-    size = fields.String(attribute='size', data_key='size')
-    stock = fields.String(attribute='stock', data_key='stock')
+    id = fields.Int(load_only=True)
+    name = fields.Str(required=True)
+    price = fields.Str(required=True)
+    brand = fields.Str(required=True)
+    size = fields.Str(required=True)
+    stock = fields.Str(required=True)
 
     @post_load
     def make_product(self, data, **kwargs):
