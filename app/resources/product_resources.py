@@ -12,7 +12,10 @@ def index():
 def get_product(product_id):
     from app.services.product_services import ProductService
     product = ProductService().find_by_id(product_id)
-    return jsonify(schema.dump(product)), 200
+    product_data = schema.dump(product)
+    product_data['id'] = product.id
+
+    return jsonify(product_data), 200
 
 @product.route('/product/brand/<string:brand>', methods=['GET'])
 def get_product_by_brand(brand):

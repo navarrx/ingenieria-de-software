@@ -23,7 +23,7 @@ services:
       - "traefik.http.middlewares.ms1.circuitbreaker.expression=NetworkErrorRatio() > 0.5"
   
   msorder1:
-    image: msorder1:v1.0.0
+    image: msorder1:v1.0.2
     environment:
       - USER_DB=${USER_DB}
       - PASS_DB=${PASS_DB}
